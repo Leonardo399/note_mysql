@@ -1,0 +1,671 @@
+link tutorial w3scholl mysql : https://www.w3schools.com/mysql/mysql_sql.asp
+
+=== DML (DATA MANIPULATION LANGUAGE) ===
+! NOTE !
+1. Tipe data number tidak perlu memakai kutip
+
+## Mysql Select  red
+// Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name;
+	- SELECT * FROM table_name;
+
+// Contoh : 
+	- SELECT CustomerName, City, Country FROM Customers;
+	- SELECT * FROM Customers;
+
+-- The MySQL SELECT DISTINCT Statement --
+! Pernyataan SELECT DISTINCT digunakan untuk mengembalikan hanya nilai yang berbeda (berbeda).
+// Sintaks
+	- SELECT DISTINCT column1, column2, ...
+		FROM table_name;
+
+// Contoh : 
+	- SELECT DISTINCT Country FROM Customers;
+	- SELECT COUNT(DISTINCT Country) FROM Customers;
+
+
+## Mysql Where Clause red
+// Sintaks 
+	- SELECT column1, column2, ...
+		FROM table_name
+		WHERE condition;
+
+// Contoh : 
+	- SELECT * FROM Customers WHERE Country = 'Mexico';
+	- SELECT * FROM Customers WHERE CustomerID = 1;
+
+-- Operators in The WHERE Clause --
+The following operators can be used in the WHERE clause: 
+	- (<, >, <=, >=, <>(!=), =, BETWEEN, LIKE, IN, AND, OR, NOT)
+
+
+
+## MySQL AND, OR and NOT Operators red
+// AND Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name
+		WHERE condition1 AND condition2 AND condition3 ...;
+
+// OR Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name
+		WHERE condition1 OR condition2 OR condition3 ...;
+
+// NOT Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name
+		WHERE NOT condition;
+
+// Contoh :
+	- SELECT * FROM Customers WHERE Country = 'Germany' AND City = 'Berlin';
+	- SELECT * FROM Customers WHERE City = 'Berlin' OR City = 'Stuttgart';
+	- SELECT * FROM Customers WHERE NOT Country = 'Germany';
+
+
+
+
+## Mysql Order By Keyword red
+// Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name
+		ORDER BY column1, column1, ... ASC|DESC;
+
+// Contoh : 
+	- SELECT * FROM Customers ORDER BY Country; // default = ASC
+	- SELECT * FROM Customers ORDER BY Country DESC;
+	- SELECT * FROM Customers ORDER BY Country ASC, CustomerName DESC;
+
+
+
+## The MySQL INSERT INTO Statement red
+// Sintaks
+	- INSERT INTO table_name (column1, column2, ...)
+		VALUES(value1, value2, ...);
+	- INSERT INTO table_name VALUES(value1, value2, ..) // jika ada auto_increment maka kosongkan saja (tidak d skip)
+
+// Contoh : 
+	- INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country)
+		VALUES('Cardinal', 'Tom B. Erichsen', 'Skagen 21', 'Stavanger', 4006, Norway);
+	- INSERT INTO Customers VALUES (,'Erika', 'Erica', ...); // contoh paling depan bernilai auto_increment
+
+
+
+
+## MySQL NULL Values red
+// Sintaks IS NULL
+	- SELECT column_names FROM table_name WHERE column_name IS NULL;
+
+// Sintaks IS NOT NULL
+	- SELECT column_names FROM table_name WHERE column_name IS NOT NULL;
+
+
+// Contoh : 
+	- SELECT CustomerName, ContactName, Address FROM Customers WHERE Address IS NULL;
+	- SELECT CustomerName, ContactName, Address FROM Customers WHERE Address IS NOT NULL
+
+
+
+## The Mysql UPDATE Statement
+! Be careful when updating records. If you omit the WHERE clause, ALL records will be updated!
+// Sintaks 
+	- UPDATE table_name
+		SET column1 = value1, column2 = value2, ...
+		WHERE condition;
+
+// Contoh : 
+	- UPDATE Customers SET ContactName = 'Alfred', City = 'Frankfurt' WHERE CustomerID = 1;
+
+
+## The Mysql DELETE Statement red
+! If you omit the WHERE clause, all records in the table will be deleted!
+// Sintaks
+	- DELETE FROM table_name WHERE condition;
+
+// Contoh : 
+	- DELETE FROM Customers WHERE CustomerName = 'Alfert Freddy';
+	- DELETE FROM Customers; // menghapus smua isi table
+
+
+## The Mysql LIMIT Clause red
+! The LIMIT clause is used to specify the number of records to return.
+// Sintaks
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE condition
+		LIMIT number(skip), number(jml limit)
+
+// Contoh : 
+	- SELECT * FROM Customers WHERE Country='Germany' LIMIT 3;
+	- SELECT * FROM Customers LIMIT 3; 
+	- SELECT * FROM Customers LIMIT 2,5; // mulai dari baris ke 2 dan mengambil 5 buah baris sesudahnya
+
+
+
+## Mysql MIN() and MAX() Function red
+! The MIN() function returns the smallest value of the selected column.
+! The MAX() function returns the largest value of the selected column.
+! Recomended to use AS
+// Sintaks MIN()
+	- SELECT MIN(column_name)
+		FROM table_name
+		WHERE condition;
+
+// Sintaks MAX()
+	- SELECT MAX(column_name)
+		FROM table_name
+		WHERE condition;
+
+// Contoh : 
+	- SELECT MIN(Price) AS SmallestPrice FROM Products WHERE Price > 1000; // output : 1 kolom dengan isi 1 baris yaitu nilai minimal dari kolom Price
+	- SELECT MAX(Price) AS LargestPrice FROM Products;
+
+
+
+## Mysql COUNT(), AVG(), and SUM() Functions red
+! The COUNT() function returns the number of rows that matches a specified criterion.
+! The SUM() function returns the total sum of a numeric column. 
+
+// Sintaks COUNT()
+	- SELECT COUNT(column_name) 
+		FROM table_name
+		WHERE condition;
+
+// Sintaks AVG()
+	- SELECT AVG(column_name)
+		FROM table_name
+		WHERE condition;
+
+// Sintaks SUM()
+	- SELECT SUM(column_name)
+		FROM table_name
+		WHERE condition
+
+
+// Contoh : 
+	- SELECT COUNT(ProductID) FROM Products WHERE ProductID > 2; output : 1 kolom dengan isi 1 baris yaitu nilai jumlah dari kolom ProductID
+	- SELECT AVG(Price) FROM Products;
+	- SELECT SUM(Quantity) FROM OrderDetails;
+
+
+
+## The Mysql LIKE Operator red
+! The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
+! There are two wildcards often used in conjunction with the LIKE operator:
+	> The percent sign (%) represents zero, one, or multiple characters
+ 	> The underscore sign (_) represents one, single character
+! The percent sign and the underscore can also be used in combinations!
+
+// Sintaks
+	- SELECT column1, column2, ...
+		FROM table_name
+		WHERE columnN LIKE pattern;
+
+$ Here are some examples showing different LIKE operators with '%' and '_' wildcards:
+	LIKE Operator					Description
+	WHERE CustomerName LIKE 'a%'	Finds any values that start with "a"
+	WHERE CustomerName LIKE '%a'	Finds any values that end with "a"
+	WHERE CustomerName LIKE '%or%'	Finds any values that have "or" in any position
+	WHERE CustomerName LIKE '_r%'	Finds any values that have "r" in the second position
+	WHERE CustomerName LIKE 'a_%'	Finds any values that start with "a" and are at least 2 characters in length
+	WHERE CustomerName LIKE 'a__%'	Finds any values that start with "a" and are at least 3 characters in length
+	WHERE ContactName LIKE 'a%o'	Finds any values that start with "a" and ends with "o"
+
+
+// Contoh : 
+	- SELECT * FROM Customers WHERE CustomerName LIKE 'a%';
+
+
+
+## Mysql Wildcards red
+! A wildcard character is used to substitute one or more characters in a string.
+
+! Wildcard characters are used with the LIKE operator. The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
+// Wildcards Characters in Mysql : % dan _
+
+
+## Mysql IN Operator red
+! The IN operator is a shorthand for multiple OR conditions.
+// Sintaks
+	- SELECT column_name
+		FROM table_name
+		WHERE column_name IN (value1, value2, ...);
+	- SELECT column_name
+		FROM table_name
+		WHERE column_name IN (SELECT statement);
+
+// Contoh 
+	- SELECT * FROM Customers WHERE Country IN ('Germany', 'France', 'UK');
+	- SELECT * FROM Customers WHERE Country IN (SELECT Country FROM Suppliers);
+
+
+## Mysql BETWEEN Operator red
+! The BETWEEN operator is inclusive: begin and end values are included.
+// Sintaks 
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE column_name BETWEEN value1 AND value2;
+
+// Contoh :
+	- SELECT * FROM Products WHERE Price BETWEEN 10 AND 20;
+
+-- BETWEEN with IN Example --
+! The following SQL statement selects all products with a price between 10 and 20. In addition; do not show products with a CategoryID of 1,2, or 3:
+// Contoh : 
+	- SELECT * FROM Products WHERE Price BETWEEN 10 AND 20 AND Category NOT IN (1,2,3);
+
+
+-- BETWEEN Text Values Example --
+! The following SQL statement selects all products with a ProductName between "Carnarvon Tigers" and "Mozzarella di Giovanni":
+// Contoh : 
+	- SELECT * FROM Products WHERE ProductName BETWEEN 'Carnarvon Tigers' AND 'Mozzarella di Giovanni' ORDER BY ProductName;
+
+
+-- NOT BETWEEN Text Values Example --
+! The following SQL statement selects all products with a ProductName not between "Carnarvon Tigers" and "Mozzarella di Giovanni":
+// Contoh : 
+	- SELECT * FROM Products WHERE ProductsName NOT BETWEEN 'Carnarvon Tigers' AND 'Mozzarella di Giovanni' ORDER BY ProductName;
+
+
+-- BETWEEN Dates Example
+! The following SQL statement selects all orders with an OrderDate between '01-July-1996' and '31-July-1996':
+// Contoh : 
+	- SELECT * FROM Orders WHERE OrderDate BETWEEN '1996-07-01' AND '1996-07-31';
+
+
+
+## Mysql Aliases red
+! Aliases are used to give a table, or a column in a table, a temporary name.
+! Aliases are often used to make column names more readable.
+! An alias only exists for the duration of that query.
+! An alias is created with the AS keyword.
+
+// Sintaks Alias Kolom
+	- SELECT column_name AS alias_name FROM table_name;
+
+// Sintaks Alias Tabel
+	- SELECT column_name(s) FROM table_name AS alias_name;
+
+// Contoh : 
+	- SELECT CustomerID AS ID, CustomerName AS Customer FROM Customers;
+	- SELECT CustomerName AS Customer, ContactName AS "Contact Person" FROM Customers; // jika lebih dari satu kata maka penamaan alias memakai kutip ""
+
+	! The following SQL statement creates an alias named "Address" that combine four columns (Address, PostalCode, City and Country):
+	- SELECT CustomerName, CONCAT_WS(',', Address, PostalCode, City, Country) AS Address FROM Customers;
+
+	-- Alias for Tables Example --  yellow (important?)
+	! The following SQL statement selects all the orders from the customer with CustomerID=4 (Around the Horn). We use the "Customers" and "Orders" tables, and give them the table aliases of "c" and "o" respectively (Here we use aliases to make the SQL shorter):
+	- SELECT o.OrderID, o.OrderDate, c.CustomerName FROM Customers AS c, Orders AS o WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
+
+! Aliases can be useful when:
+	- There are more than one table involved in a query
+	- Functions are used in the query
+	- Column names are big or not very readable
+	- Two or more columns are combined together
+
+
+## Mysql Joins 
+Link : https://www.w3schools.com/mysql/mysql_join.asp
+! Supported Types of Joins in MySQL : 
+	- INNER JOIN: Returns records that have matching values in both tables
+	- LEFT JOIN: Returns all records from the left table, and the matched records from the right table
+	- RIGHT JOIN: Returns all records from the right table, and the matched records from the left table
+	- CROSS JOIN: Returns all records from both tables
+
+
+
+## Mysql INNER JOIN Keyword red
+// Sintaks 
+	- SELECT column_name(s) 
+		FROM table1
+		INNER JOIN table2
+		ON table1.column_name = table2.column_name;
+
+// Contoh : 
+	- SELECT Orders.OrderID, Customers.CustomerName FROM Orders INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+! Can join more than three tables
+
+
+## Mysql LEFT JOIN Keyword red
+// Sintaks
+	- SELECT column_name(s)
+		FROM table1 
+		LEFT JOIN table2
+		ON table1.column_name = table2.column_name;
+
+// Contoh : 
+	- SELECT Customers.CustomerName, Orders.OrderID FROM Customers LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID ORDER BY Customers.CustomerName;
+
+
+## Mysql RIGHT JOIN Keyword red
+// Sintaks
+	- SELECT column_name(s)
+		FROM table1
+		RIGHT JOIN table2
+		ON table1.column_name = table2.column_name;
+
+// Contoh : 
+	- SELECT Orders.OrderID, Employees.LastName, Employees.FirstName FROM Orders RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID ORDER BY Orders.OrderID;
+
+
+
+## Mysql Cross Join Example red
+// Sintaks
+	- SELECT Customers.CustomerName, Orders.OrderID
+		FROM Customers
+		CROSS JOIN Orders;
+
+// Contoh : 
+	- SELECT Customers.CustomerName, Orders.OrderID FROM Customers CROSS JOIN Orders WHERE Customers.CustomerID=Orders.CustomerID;
+
+
+## Mysql Self Join ??
+link : https://www.w3schools.com/mysql/mysql_join_self.asp
+// Sintaks : 
+	- SELECT column_name(s)
+		FROM table T1, table1 T2 
+		WHERE condition;
+
+	! T1 and T2 are different table aliases for the same table.
+
+// Contoh :
+ 	- SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City FROM Customers A, Customers B WHERE A.CustomerID <> B.CustomerID AND A.City = B.City ORDER BY A.City
+
+
+## The Mysql UNION Operator red
+! The UNION operator is used to combine the result-set of two or more SELECT statements.
+
+	- Every SELECT statement within UNION must have the same number of columns
+	- The columns must also have similar data types
+	- The columns in every SELECT statement must also be in the same order
+
+
+// Sintaks
+	- SELECT column_name(s) FROM table1
+		UNION
+	  	SELECT column_name(s) FROM table2;
+
+// Contoh : 
+	- SELECT City FROM Customers UNION SELECT City FROM Suppliers ORDER BY City
+	- SELECT 'Customer' AS Type, ContactName, City, Country
+		FROM Customers
+		UNION
+		SELECT 'Supplier', ContactName, City, Country
+		FROM Suppliers;
+
+
+	! Note: If some customers or suppliers have the same city, each city will only be listed once, because UNION selects only distinct values. Use UNION ALL to also select duplicate values!
+
+-- SQL UNION ALL --
+// Contoh : 
+	- SELECT City FROM Customers UNION ALL SELECT City FROM Suppliers ORDER BY City
+
+
+-- SQL UNION With WHERE --
+// Contoh : 
+	- SELECT City, Country FROM Customers WHERE Country='Germany' UNION SELECT City, Country FROM Suppliers WHERE Country='Germany' ORDER BY City;
+
+
+-- SQL UNION ALL With Where --
+// Contoh : 
+	- SELECT City, Country FROM Customers
+		WHERE Country='Germany'
+		UNION ALL
+		SELECT City, Country FROM Suppliers
+		WHERE Country='Germany'
+		ORDER BY City;
+
+
+## Mysql GROUP BY Statement red
+! The GROUP BY statement groups rows that have the same values into summary rows, like "find the number of customers in each country".
+
+! The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+// Sintaks
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE condition
+		GROUP BY column_name(s)
+		ORDER BY column_name(s)
+
+// Contoh : 
+	- SELECT COUNT(CustomerID), Country
+		FROM Customers
+		GROUP BY Country;
+
+	- SELECT COUNT(CustomerID), Country
+		FROM Customers
+		GROUP BY Country
+		ORDER BY COUNT(CustomerID) DESC;
+
+	- SELECT Shippers.ShipperName, COUNT(Orders.OrderID) AS NumberOfOrders 
+		FROM Orders LEFT JOIN Shippers ON Orders.ShipperID = Shippers.ShippersID 
+		GROUP BY ShipperName;
+
+
+
+## The Mysql HAVING Clause red
+! The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+
+// Sintaks : 
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE condition
+		GROUP BY column_name(s)
+		HAVING condition
+		ORDER BY column_name(s);
+
+// Contoh : 
+	- SELECT COUNT(CustomerID), Country
+		FROM Customers
+		GROUP BY Country
+		HAVING COUNT(CustomerID) > 5
+		ORDER BY COUNT(CustomerID) DESC;
+
+	- SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+		FROM (Orders
+		INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID)
+		GROUP BY LastName
+		HAVING COUNT(Orders.OrderID) > 10;
+
+	- SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+		FROM Orders
+		INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+		WHERE LastName = 'Davolio' OR LastName = 'Fuller'
+		GROUP BY LastName
+		HAVING COUNT(Orders.OrderID) > 25;
+
+
+## The Mysql EXIST Operator red
+! The EXISTS operator is used to test for the existence of any record in a subquery.
+! The EXISTS operator returns TRUE if the subquery returns one or more records.
+
+// Sintaks
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE EXIST(SELECT column_name FROM table_name WHERE condition);
+
+// Contoh : 
+	! The following SQL statement returns TRUE and lists the suppliers with a product price less than 20:
+	- SELECT SupplierName
+		FROM Suppliers
+		WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
+
+
+## Mysql ANY and ALL Operators red
+! link : https://www.w3schools.com/mysql/mysql_any_all.asp
+# The ANY Operator
+	! The ANY operator:
+		- returns a boolean value as a result
+		- returns TRUE if ANY of the subquery values meet the condition
+	ANY means that the condition will be true if the operation is true for any of the values in the range.
+
+// Sintaks ANY 
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE column_name operator ANY
+			(SELECT column_name
+			FROM table_name
+			WHERE condition);
+	! Note: The operator must be a standard comparison operator (=, <>, !=, >, >=, <, or <=).
+
+// Contoh ANY Operator : 
+	- SELECT ProductName
+		FROM Products
+		WHERE ProductID = ANY
+		  (SELECT ProductID
+		  FROM OrderDetails
+		  WHERE Quantity = 10);
+
+
+# The ALL Operator
+	! The ALL operator:
+		- returns a boolean value as a result
+		- returns TRUE if ALL of the subquery values meet the condition
+		- is used with SELECT, WHERE and HAVING statements
+	ALL Operator means that the condition will be true only if the operation is true for all values in the range.
+
+// Sintaks ALL Operator
+	- SELECT column_name(s)
+		FROM table_name
+		WHERE column_name operator ALL
+		  (SELECT column_name
+		  FROM table_name
+		  WHERE condition);
+
+// Contoh ALL Operator : 
+	- SELECT ProductName
+		FROM Products
+		WHERE ProductID = ALL
+		  (SELECT ProductID
+		  FROM OrderDetails
+		  WHERE Quantity = 10);
+
+
+## The Mysql INSERT INTO SELECT Statement red
+! The INSERT INTO SELECT statement copies data from one table and inserts it into another table.
+! The INSERT INTO SELECT statement requires that the data types in source and target tables matches.
+
+// Sintaks 
+	- INSERT INTO table2
+		SELECT * FROM table1
+		WHERE condition;
+
+	// Copy only some columns from one table into another table
+	- INSERT INTO table2 (column1, column2,...)
+		SELECT column1, column2, ..
+		FROM table1
+		WHERE condition;
+
+// Contoh : 
+	- INSERT INTO Customers (CustomerName, ContactName, City)
+		SELECT  SupplierName, ContactName, City
+		FROM Suppliers;
+
+	- INSERT INTO customer (CustomerName, ContactName, Country)
+		SELECT SupplierName, ContactName, Country
+		FROM Suppliers
+		WHERE Country='Germany';
+
+
+## The Mysql CASE Statement red
+! The CASE statement goes through conditions and returns a value when the first condition is met (like an if-then-else statement). So, once a condition is true, it will stop reading and return the result. If no conditions are true, it returns the value in the ELSE clause.
+
+! If there is no ELSE part and no conditions are true, it returns NULL.
+
+// Sintaks
+	- SELECT column_name(s)
+		CASE
+			WHEN condition1 THEN result1
+			WHEN condition2 THEN result2
+			WHEN conditionN THEN resultN
+			ELSE result
+		END
+		FROM table_name;
+
+// Contoh : 
+	- SELECT order_id, quantity
+		CASE 
+			WHEN quantity > 30 THEN 'The quantity is greater than 30'
+			WHEN quantity = 30 THEN 'The quantity is 30'
+			ELSE 'The quantity is under 30'
+		END AS quantity_text
+		FROM order_detail; 
+
+	- SELECT customer_name, city, country
+		FROM customers
+		ORDER BY
+		(CASE
+			WHEN city IS NULL THEN country
+			ELSE city
+		END);
+		
+	// seperti switch case
+	- SELECT order_id, quantity,
+		CASE quantity
+			WHEN > 30 THEN 'The quantity is greater than 30'
+			WHEN = 30 THEN 'The quantity is 30'
+			ELSE 'The quantity is under 30'
+			END AS quantity_text
+		FROM order_detail;
+
+## Mysql NULL Functions red
+
+# Mysql IFNULL
+! The MySQL IFNULL() function lets you return an alternative value if an expression is NULL.
+
+// Contoh :
+	- SELECT product_name, unit_price * (units_in_stock + IFNULL(units_on_order, 0))
+		FROM products; 
+		! IFNULL(nilai_jika_benar, nilai_jika_salah)
+
+
+# Mysql COALESCE Function
+// Contoh :
+	- SELECT product_name, unit_price * (units_in_stock + IFNULL(units_on_order, 0))
+		FROM products; 
+
+! hasil sama saja dengan IFNULL?
+
+
+
+## Mysql Comments red
+// komentar di sql
+	-> -- komentar, /*banyak baris komentar*/
+
+
+## Mysql Operators red
+
+// Mysql Arithmetic Operators
+	-> +, -, *, /, %|MOD, DIV(sama seperti pembagian tetapi hasilnya integer(dibulatkan|tidak ada koma))
+
+// Mysql Bitwise Operators
+	-> &, |, ^
+
+// Mysql Comparison Operators
+	-> =, >, <, >=, <=, <>
+
+// Mysql Compound Operators
+	-> +=, -=, *=, /=, %=, &=(bitwise AND equals), ^_=(Bitwise exclusive equals), |*=(Bitwise OR equals)
+
+// Mysql Logical Operators
+	-> ALL, AND, ANY, BETWEEN, EXIST, IN, LIKE, NOT, OR, SOME
+
+
+
+
+
+
+
+
+!! NOTE !!
+! Memakai Operator LIKE dalam fungsi pencarian maka akan membuatnya lama, karena operator LIKE memeriksa dari baris pertama sampai baris trakhir
+	! Operator LIKE juga tidak berpengaruh oleh statement INDEX pada kolom
+	! Operator LIKE tidak disarankan untuk digunakan mencari data pada kumpulan data yang sangat banyak 
+
+
+
+
+
+

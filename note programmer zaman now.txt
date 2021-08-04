@@ -1,0 +1,209 @@
+## FULLTEXT
+! digunakan untuk fitur searching pada suatu aplikasi d karenakan jika menggunakan operator LIKE pada pencarian suatu data dalam jml besar akan sangat lama karena operator LIKE akan scanning record smpai trakhir
+! recomend untuk memakai cara lain selain yg disediakan mysql dalam fitur searching
+! LIKE tidak berpengaruh terhadap index
+! Full-text search juga merupakan index
+! Link : https://dev.mysql.com/doc/refman/8.0/en/fulltext-query-expansion.html
+
+// Mode Full-text search
+	- Natural Language, yaitu mencari seperti bahasa natural (per-kata), link : 
+		https://dev.mysql.com/doc/refman/8.0/en/fulltext-natural-language.html
+	- Boolean, yaitu mencari dengan kemampuan mengandung kata (+) atau tidak mengandung kata (-) dan lain-lain, link : https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
+
+// Sintaks 
+	// Menambah full-text search
+		- ALTER TABLE nama_table
+			ADD FULLTEXT nama_constraint_full_text(kolom1, kolom2,...);
+
+	// Menghapus full-text search
+		- ALTER TABLE nama_table
+			DROP INDEX nama_constraint_full_text;
+
+	// Full-text search mode natural language
+		- SELECT * FROM nama_table 
+			WHERE MATCH(kolom1, kolom2,..)
+				AGAINST('keyword' IN NATURAL LANGUAGE MODE);
+
+	// Full-text search mode Boolean
+		- SELECT * FROM nama_table 
+			WHERE MATCH(kolom1, kolom2,..)
+				AGAINST('keyword' IN BOOLEAN MODE);
+
+// Contoh : 
+	// Menambah full-text search
+		- ALTER TABLE products
+			ADD FULLTEXT product_search(name, description);
+
+	// Menghapus full-text search
+		- ALTER TABLE products
+			DROP INDEX product_search;
+
+	// Full-text search mode natural language
+		- SELECT * FROM products 
+			WHERE MATCH(name, description)
+				AGAINST('ayam' IN NATURAL LANGUAGE MODE);
+
+	// Full-text search mode Boolean
+		- SELECT * FROM products 
+			WHERE MATCH(name, description)
+				AGAINST('ayam' IN BOOLEAN MODE);
+
+
+
+
+## Relasi antar table red
+// One To One
+	- misal satu customer hanya dapat memiliki satu akun e-bank
+		-> relasi table ebank dan customers
+
+
+// one to many
+	- misal produk dapat memuat beberapa kategori
+		-> relasi table kategori dan produk
+		-> di table produk terdapat kolom id_kategori yg merupakan foreign key dari table kolom id di table kategori(primary key)
+
+
+// Many to Many 
+! biasanya membingungkan untuk pemula
+! biasanya dilakukan dengan membuat satu table sebagai perantara
+	- misal table order_detail yang terdapat kolom id_produk dan id_orders
+		-> relasi table produk dengan order_detail : one to many
+		-> relasi table orders dengan order_detail : one to many
+! satu kolom bisa sebagai primary key sekaligus foreign key
+! jika satu table terdapat 2 primary key maka uniqueny bergantung pada kedua nilai primary key tersebut
+
+
+
+
+## Transaction red
+! transaction digunakan pada saat menjalankan banyak perintah sql dalam satu aksi di suatu aplikasi, 
+	! jadi jika salah satu perintah sql gagal dijalankan maka perintah sql sebelumnya juga dibatalkan
+! Transaction hanya bisa dilakukan untuk perintah DML(DATA MANIPULATION LANGUAGE), bkn DDL(DATA DEFINITION LANGUAGE)
+! jika transaction belum d commit maka data asli tidak akan berubah
+// Contoh : 
+	- START TRANSACTION; // dimulai dengan start transaction
+		// action yg ingin dilakukan
+		INSERT INTO guestbooks 
+		VALUES('febri1@gmail.com','contoh','contoh'),
+			  ('febri2@gmail.com','contoh','contoh'),
+			  ('febri3@gmail.com','contoh','contoh');
+
+		SELECT * FROM guestbook;
+
+	-> COMMIT; // dan diakhiri dengan commit jika smua perintah sql berhasil dijalankan
+	==
+	-> ROLLBACK; // jika ada perintah sql yang gagal/salah maka gunakan perintah ROLLBACK.
+
+// Contoh kasus pada toko online jika user checkout suatu barang maka sistem aplikasi akan melakukan insert ke table transaksi kemudian update stock di table product dan lain".
+
+
+$$ LOCKING gold
+	- dalam sql transaction ada fitur yang namanya locking, yaitu jika ada 2 atau lebih perintah sql transaction yang dilakukan oleh user yg berbeda dalam waktu bersamaan maka Mysql akan menentukan prioritas perintah yg terlebih dahulu dijalankan dan menunda perintah yg lain.
+		// contoh : jika user1 sedang melakukan sql transaction update dan kemudian ada user2 melakukan sql transaction update juga pada table dan record yang sama, maka perintah user2 baru dapat dieksekusi setelah perintah user1 sudah di commit/rollback
+
+	! Locking bisa dilakukan secara otomatis atau secara manual
+		-> secara manual jika kita sedang melakukan perintah SELECT dan kemudian supaya data tersebut tidak dirubah terlebih dahulu oleh user lain.
+		! jika kita ingin melakukan locking data secara manual, kita bisa tambahkan perintah FOR UPDATE dibelakang query SELECT
+			// Contoh : SELECT * FROM products WHERE id='P001' FOR UPDATE; 
+
+$$ DEADLOCK gold
+	! hati" dalam menggunakan sql transaction karena bisa membuat deadlock, yaitu kondisi dimana 2 proses atau lebih saling tunggu menunggu untuk melakukan sesuatu yg berujung tidak pernah dijalankan
+	// Contoh saat: 
+		1. proses 1 melakukan SELECT FOR UPDATE untuk data 001
+		2. proses 2 melakukan SELECT FOR UPDATE untuk data 002
+		3. proses 1 melakukan SELECT FOR UPDATE untuk data 002, diminta menunggu karena di lock oleh proses 2
+		4. proses 2 melakukan SELECT FOR UPDATE untuk data 001, diminta menunggu karena di lock oleh proses 1
+		5. Akhirnya proses 1 dan proses 2 saling menunggu
+		6. terjadilah deadlock
+
+
+$$ Locking Table gold
+! biasanya digunakan saat kita ingin melakukan dokumentasi terhadap table
+! Jika kita menlock table, artinya seluruh data di table tersebut akan di lock
+! ada 2 jenis lock table yaitu READ dan WRITE
+// Sintaks:
+	- LOCK TABLES nama_tabel READ; // user yg mengelock dan User lain  hanya bisa melakukan read d table
+	- LOCK TABLES nama_tabel WRITE; // user yg mengelock bisa melakukan read dan write terhadap table tersebut sedangkan user lain tidak dapat melakukan sql apapun d table
+
+	-> setelah selesai melakukan lock table, kita bisa melakukan unlock dengan perintah : 
+		- UNLOCK TABLES;
+ 
+
+$$ Locking Instance gold
+! Biasanya proses locking instance ini digunakan ketika misal kita ingin melakukan backup data, agar tidak terjadi perubahan terhadap struktur tabel.
+! Lock instance adalah perintah locking yang akan membuat perintah DDL(Data Definition Language) akan diminta menunggu sampai proses unlock instance
+	! user lain tetap dapat melakukan DML terhadap data table di database, yg tidak bisa adalah melakukan DDL
+// Sintaks :
+	- LOCK INSTANCE FOR BACKUP;
+
+	-> Setelah selesai lakukan unlock : 
+		- UNLOCK INSTANCE;
+
+
+
+## User Management , Root User red gold
+! Secara default, mysql membuat root user sebagai super administrator
+! Namun best practicenya saat kita menjalankan Mysql pada aplikasi yang kita buat, sangat disarankan tidak menggunakan user root
+	! Lebih baik kita buat user khusus tiap aplikasi, bahkan kita bisa batasi hak akses user tersebut.
+! Link daftar hak akses user di mysql : https://dev.mysql.com/doc/refman/8.0/en/grant.html
+
+// Sintaks : 
+	// Membuat user baru
+		- CREATE USER 'nama_user'@'Server';
+	// Mneghapus user
+		- DROP USER 'nama_user'@'Server';
+	// Menambah Hak akses ke user
+		- GRANT hak_akses ON nama_db.nama_table TO 'nama_user'@'Server';
+	// Melihat daftar hak akses user
+		- SHOW GRANTS FOR 'nama_user'@'server';
+	// Menghapus hak akses user
+		- REVOKE hak_akses ON nama_db.nama_table FROM 'nama_user'@'server'; 
+	// Mengubah password untuk user 
+		! saat pertama kali dibuat user tidak mempunyai password?
+		- SET PASSWORD FOR 'nama_user'@'server' = 'password'
+
+// Contoh : 
+	- CREATE USER 'febri'@'localhost|127.0.0.1|%'; // % = bisa di akses dmna aj (tidk recomend karena rentan bahaya)
+
+	- DROP USER 'febri'@'localhost|127.0.0.1|%' 
+
+	- GRANT SELECT ON belajar_mysql_db.* TO 'febri'@'localhost'; // * = smua table
+	- GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE ON belajar_mysql.* TO 'febri'@'localhost';
+
+	- SHOW GRANTS FOR 'febri'@'localhost';
+
+	- REVOKE SELECT ON belajar_mysql_db.* FROM 'febri'@'localhost';
+
+	- SET PASSWORD FOR 'febri'@'localhost' = 'febri123';
+		! jika tidak bisa maka tambahkan fungsi PASSWORD()
+			- SET PASSWORD FOR 'febri'@'localhost' = PASSWORD('febri123');
+			-> nanti akan diubah menjadi hexadecimal, tetapi password tetap febri123
+		! cara meliha hexadecimal hasil fungsi PASSWORD()
+			- SELECT PASSWORD('password');
+
+! login menggunakan password d xampp: mysql -u nama_user -p
+
+## Backup Database red
+
+
+
+
+
+## Restore Database red
+
+
+
+
+## Materi selanjutnya
+	- Studi kasus Database Design
+	- Belajar bahasa pemrograman
+	- Mysql Tuning
+	- Mysql Scalability
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+
+
+## DATE dan TIME Functions
+! Link : https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html
+// Function DATE_FORMAT 
+	- SELECT DATE_FORMAT(BirthDate, "%W, %e %M %Y") FROM Employees;
+		-> output : Sunday, 8 December 1968
+
+
+## Flow Control Functions
+! Link : https://dev.mysql.com/doc/refman/8.0/en/flow-control-functions.html
+
+
+
+## Aggregate Functions
+! Link : https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html
+
+
+
+

@@ -1,0 +1,357 @@
+=== DDL (DATA DEFINITION LANGUAGE) ===
+
+
+## The Mysql CREATE DATABASE Statement red
+// Sintaks 
+	- CREATE DATABASE databasename;
+
+// Contoh : 
+	- CREATE DATABASE testDB;
+
+
+## The Mysql DROP DATABASE Statement red
+// Sintaks 
+	- DROP DATABASE databaseName;
+
+// Contoh : 
+	- DROP DATABASE testDB;
+
+
+## The Mysql CREATE TABLE Statement
+// Sintaks 
+	- CREATE TABLE table_name(
+		column1 dataType,
+		column2 dataType,
+		..
+	);
+
+
+// Contoh : 
+	- CREATE TABLE person(
+		id int primary key auto_increment,
+		first_name VARCHAR(100),
+		last_name VARCHAR(100),
+		address VARCHAR(100)
+	);
+
+
+-- Create Table Using Another Table --
+// Sintaks
+	- CREATE TABLE new_table_name AS
+		SELECT column1, column2, ...
+		FROM existing_table_name
+		WHERE ...;
+
+// Contoh : 
+	- CREATE TABLE test_table AS
+		SELECT customer_name, contact_name
+		FROM customers;
+
+
+
+## The Mysql DROP TABLE Statement red
+// Sintaks
+	- DROP TABLE table_name;
+
+// Contoh : 
+	- DROP TABLE shippers;
+
+
+-- Mysql TRUNCATE TABLE --
+! The TRUNCATE TABLE statement is used to delete the data inside a table, but not the table itself.
+// Sintaks 
+	- TRUNCATE TABLE table_name;
+
+
+
+
+## Mysql ALTER TABLE Statement red
+! The ALTER TABLE statement is used to add, delete, or modify columns in an existing table.
+! The ALTER TABLE statement is also used to add and drop various constraints on an existing table.
+
+-- ALTER TABLE - ADD Column --
+// Sintaks
+	- ALTER TABLE table_name
+		ADD column_name dataType;
+
+// Contoh : 
+	- ALTER TABLE customers
+		ADD email VARCHAR(255)
+
+
+-- ALTER TABLE - DROP Column --
+// Sintaks
+	- ALTER TABLE table_name
+		DROP COLUMN column_name;
+
+// Contoh : 
+	- ALTER TABLE customers
+		DROP COLUMN email;
+
+
+-- ALTER TABLE - MODIFY COLUMN --
+! mengubah tipe data kolom
+// Sintaks
+	- ALTER TABLE table_name 
+		MODIFY COLUMN column_name dataType
+
+// Contoh : 
+	- ALTER TABLE persons
+		MODIFY COLUMN date_of_birth YEAR;
+
+# MERUBAH NAMA TABLE 
+	- RENAME TABLE namaTableLama To namaTableBaru;
+
+# MERUBAH NAMA KOLOM TABLE
+	- Alter table namaTable change namaKolomLama namaKolomBaru tipeData Constrains
+		! contraints : foreign key, primary key, not null, auto_increment, default, dll
+
+# Menambahkan PRIMARY KEY
+	- ALTER TABLE nama_table ADD PRIMARY KEY (nama_kolom);
+
+
+--- ALTER TABLE - ADD CONSTRAINT | DROP CONSTRAINT --- gold
+// Sintaks ADD
+	- ALTER TABLE nama_table
+		ADD CONSTRAINT alias_constraint nama_constraint;
+
+// Sintaks DROP
+	- ALTER TABLE nama_table
+		DROP CONSTRAINT alias_constraint;
+
+// Contoh ADD : 
+	- ALTER TABLE products
+		ADD CONSTRAINT price_check CHECK(price >= 1000);
+
+	- ALTER TABLE customers
+		ADD CONSTRAINT email_unique UNIQUE(email);
+
+
+// Contoh DROP : 
+	- ALTER TABLE products
+		DROP CONSTRAINT price_check
+
+	- ALTER TABLE customers
+		DROP CONSTRAINT email_unique; 
+
+
+
+## Mysql CONSTRAINT gold red
+! SQL constraints are used to specify rules for data in a table.
+! Constraints can be specified when the table is created with the CREATE TABLE statement, or after the table is created with the ALTER TABLE statement.
+
+// Sintaks
+	- CREATE TABLE table_name(
+		column1 dataType constraint,
+		column2 dataType constraint,
+		...
+	)ENGINE=InnoDB;
+
+! SQL constraints are used to specify rules for the data in a table.
+
+! Constraints are used to limit the type of data that can go into a table. This ensures the accuracy and reliability of the data in the table. If there is any violation between the constraint and the data action, the action is aborted.
+
+! Constraints can be column level or table level. Column level constraints apply to a column, and table level constraints apply to the whole table.
+
+! The following constraints are commonly used in SQL:
+	- NOT NULL : Ensures that a column cannot have a NULL value
+	- UNIQUE : Ensures that all values in a column are different
+	- PRIMARY KEY : A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table
+	- FOREIGN KEY : Prevents actions that would destroy links between tables
+	- CHECK : Ensures that the values in a column satisfies a specific condition
+	- DEFAULT : Sets a default value for a column if no value is specified
+	- CREATE INDEX : Used to create and retrieve data from the database very quickly
+
+
+## Mysql NOT NULL Constraint red
+// Contoh : 
+	- CREATE TABLE Persons (
+	    ID int NOT NULL,
+	    LastName varchar(255) NOT NULL,
+	    FirstName varchar(255) NOT NULL,
+	    Age int
+	);
+
+	// jika tabel sudah dibuat
+	- ALTER TABLE Persons
+		MODIFY Age int NOT NULL;
+
+
+## Mysql UNIQUE Constraint red
+// Contoh : 
+	- CREATE TABLE Persons (
+	    ID int NOT NULL,
+	    LastName varchar(255) NOT NULL,
+	    FirstName varchar(255),
+	    Age int,
+	    CONSTRAINT UC_Person UNIQUE (ID,LastName)
+	);
+
+	- ALTER TABLE Persons
+		ADD CONSTRAINT UC_Person UNIQUE (ID,LastName);
+
+	- ALTER TABLE Persons
+		DROP INDEX UC_Person;
+
+
+## Mysql PRIMARY KEY Constraint red
+// Contoh : 
+	- CREATE TABLE Persons (
+	    ID int NOT NULL,
+	    LastName varchar(255) NOT NULL,
+	    FirstName varchar(255),
+	    Age int,
+	    CONSTRAINT PK_Person PRIMARY KEY (ID,LastName)
+	);
+
+	- ALTER TABLE Persons
+		ADD CONSTRAINT PK_Person PRIMARY KEY (ID,LastName);
+
+	- ALTER TABLE Persons
+		DROP PRIMARY KEY;
+
+
+## Mysql FOREIGN KEY Constraint red
+// Contoh : 
+	- CREATE TABLE Orders (
+	    OrderID int NOT NULL,
+	    OrderNumber int NOT NULL,
+	    PersonID int,
+	    PRIMARY KEY (OrderID),
+	    CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
+	    REFERENCES Persons(PersonID) // personID merupakan primary key di table person
+	);
+
+	- ALTER TABLE Orders
+		ADD CONSTRAINT FK_PersonOrder
+		FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+
+	- ALTER TABLE Orders
+		DROP FOREIGN KEY FK_PersonOrder;
+
+
+
+## Mysql CHECK Constraint red
+// Contoh : 
+	- CREATE TABLE Persons (
+	    ID int NOT NULL,
+	    LastName varchar(255) NOT NULL,
+	    FirstName varchar(255),
+	    Age int,
+	    City varchar(255),
+	    CONSTRAINT CHK_Person CHECK (Age>=18 AND City='Sandnes')
+	);
+
+	- ALTER TABLE Persons
+		ADD CONSTRAINT CHK_PersonAge CHECK (Age>=18 AND City='Sandnes');
+
+	- ALTER TABLE Persons
+		DROP CHECK CHK_PersonAge;
+
+
+## Mysql DEFAULT Constraint red
+// Contoh : 
+	- CREATE TABLE Orders (
+	    ID int NOT NULL,
+	    OrderNumber int NOT NULL,
+	    OrderDate date DEFAULT CURRENT_DATE()
+	);
+
+	- ALTER TABLE Persons
+		ALTER City SET DEFAULT 'Sandnes';
+
+	- ALTER TABLE Persons
+		ALTER City DROP DEFAULT; 
+
+
+
+## Mysql CREATE INDEX Statement red
+! The CREATE INDEX statement is used to create indexes in tables.
+
+! Indexes are used to retrieve data from the database more quickly than otherwise. The users cannot see the indexes, they are just used to speed up searches/queries.
+
+! Note: Updating a table with indexes takes more time than updating a table without (because the indexes also need an update). So, only create indexes on columns that will be frequently searched against
+
+// Sintaks 
+	- CREATE INDEX index_name
+		ON table_name (column1, column2, ...);
+
+	- ALTER TABLE table_name
+		DROP INDEX index_name;
+
+// Contoh :
+	- CREATE INDEX idx_lastname
+		ON persons (last_name);
+
+	- CREATE INDEX idx_pname
+		ON persons (last_name, first_name);
+
+
+	- ALTER TABLE persons
+		DROP INDEX inx_pname;
+
+
+
+
+## MYSQL AUTO_INCREMENT field red
+!  default, the starting value for AUTO_INCREMENT is 1, and it will increment by 1 for each new record.
+
+// Contoh : 
+	- CREATE TABLE Persons (
+	    Personid int NOT NULL AUTO_INCREMENT,
+	    LastName varchar(255) NOT NULL,
+	    FirstName varchar(255),
+	    Age int,
+	    PRIMARY KEY (Personid)
+	);
+
+	! To let the AUTO_INCREMENT sequence start with another value, use the following SQL statement:
+	- ALTER TABLE persons AUTO_INCREMENT=100;
+
+
+
+## Mysql Dates red
+! Link : https://www.w3schools.com/mysql/mysql_dates.asp
+! MySQL comes with the following data types for storing a date or a date/time value in the database:
+	DATE - format YYYY-MM-DD
+	DATETIME - format: YYYY-MM-DD HH:MI:SS
+	TIMESTAMP - format: YYYY-MM-DD HH:MI:SS
+	YEAR - format YYYY or YY
+
+! Tip: To keep your queries simple and easy to maintain, do not use time-components in your dates, unless you have to!
+
+
+
+## Mysql Views red
+! Link : https://www.w3schools.com/mysql/mysql_view.asp
+! In SQL, a view is a virtual table based on the result-set of an SQL statement.
+
+! A view contains rows and columns, just like a real table. The fields in a view are fields from one or more real tables in the database.
+
+! You can add SQL statements and functions to a view and present the data as if the data were coming from one single table.
+
+! A view is created with the CREATE VIEW statement.
+
+
+// Sintaks
+	- CREATE VIEW view_name AS
+		SELECT column1, column2, ...
+		FROM table_name
+		WHERE condition;
+
+	- DROP VIEW view_name;
+
+// Contoh : 
+	- CREATE VIEW [Brazil Customers] AS
+		SELECT CustomerName, ContactName
+		FROM Customers
+		WHERE Country = 'Brazil';
+
+	// jika ingin memanggil view yg telah di panggil sblmnya?
+	-> SELECT * FROM [Brazil Customers];
+
+
+	- DROP VIEW [Brazil Customers];
+
+!! Menampilkan constraint/struktur table 
+	- SHOW CREATE TABLE nama_table;
